@@ -2,7 +2,7 @@
 <head></head>
 <body>
 	<input>
-	<canvas></canvas>
+	<canvas style="border: 1px solid #ff0000;"></canvas>
 	<script async>
 		let data;
 		document.getElementsByTagName("input")[0].addEventListener("blur", async ()=>{
@@ -33,7 +33,9 @@
 			data = data.reverse()
 			data.forEach((item, idx)=>{
 				ctx.fillStyle = "rgb(" + item + "," + item + "," + item + ")"
-				ctx.fillRect(idx%c.width *2, Math.floor(idx/c.width)*2, 2, 2)
+				let x = idx%c.width *2
+				let y = Math.floor(idx/c.width)*2
+				ctx.fillRect(x, y, 2, 2)
 			})
 		})
 	</script>
