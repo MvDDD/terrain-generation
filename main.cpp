@@ -1,19 +1,32 @@
-#include <iostream> 
+#include <iostream>
 #include <stdio.h>
+#include <fstream>
+#include <chrono>
+#include "noise.h" //perlin(int32_t x, int32_t y, int32_t z, uint32_t seed, float scale)
 
-int seed = 638597;
+int main() {
+	std::ofstream file("out.txt");
+    uint32_t seed = 3422365;  // Example seed
+    uint32_t width = 16;
+    uint32_t height = 16;
+    file << (uint32_t)width << " " << (uint32_t)height << " ";
+    for (int32_t x = 0; x < width; x++) {
+    	for (int32_t y = 0; y < height; y++) {
+    		uint32_t value = perlin(x, y, 0, seed, 0.05f);
+    		uint32_t flat = perlin(x,y,0, seed, 0.1f);
+//            value += perlin(20*x, 20*y, 1, seed);
+            //value += perlin(3*x, 3*y, 1, seed);
+            //value += perlin(4*x, 4*y, 1, seed);
+            //value /= 3;
+    		float biome = flat / 256.0f;
+    		value *= biome;
 
-long random() {
-	seed ^= seed << 5;
-	seed ^= seed >> 6;
-	seed ^= seed >> 7;
-	seed ^= seed << 8;
-	return ((long)seed)/(4294967296.0);
-}
-
-int main(){
-	while (1){
-		std::cout << random() << std::endl;
-		_sleep(1000);
-	}
+    		file << (uint32_t)(value) << " ";
+    	}
+	    //file << std::endl;
+    }
+    
+    file.close();
+    std::cout << "done";
+    return 0;
 }
