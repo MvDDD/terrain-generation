@@ -1,36 +1,40 @@
 <html>
 <head></head>
 <body>
+	<input>
 	<canvas></canvas>
-	<script type="text/javascript" src="data.js"></script>
-	<script>
-		function Max(arr) {
-			let max = -Infinity;
-			for (let i = 0; i < arr.length; i++) {
-				if (arr[i] > max) max = arr[i];
-			}
-			return max;
-		}		
+	<script async>
+		let data;
+		document.getElementsByTagName("input")[0].addEventListener("blur", async ()=>{
+			data = await fetch("data.js?=" + document.getElementsByTagName("input")[0].value).then(async res=>{return await res.text()})
+			function Max(arr) {
+				let max = -Infinity;
+				for (let i = 0; i < arr.length; i++) {
+					if (arr[i] > max) max = arr[i];
+				}
+				return max;
+			}		
 
-		function Min(arr) {
-			let min = Infinity;
-			for (let i = 0; i < arr.length; i++) {
-				if (arr[i] < min) min = arr[i];
+			function Min(arr) {
+				let min = Infinity;
+				for (let i = 0; i < arr.length; i++) {
+					if (arr[i] < min) min = arr[i];
+				}
+				return min;
 			}
-			return min;
-		}
-		let c = document.getElementsByTagName("canvas")[0]
-		ctx = c.getContext("2d")
-		data = data.split(" ").reverse().map(a=>parseInt(a))
-		c.height = data.pop()*2
-		c.width = data.pop()*2
-		let min = Min(data)
-		let max = Max(data)
-		data = data.map(d => Math.floor((d - min) / (max - min) * 255));
-		data = data.reverse()
-		data.forEach((item, idx)=>{
-			ctx.fillStyle = "rgb(" + item + "," + item + "," + item + ")"
-			ctx.fillRect(idx%c.width *2, Math.floor(idx/c.width)*2, 2, 2)
+			let c = document.getElementsByTagName("canvas")[0]
+			ctx = c.getContext("2d")
+			data = data.split(" ").reverse().map(a=>parseInt(a))
+			c.height = data.pop()*2
+			c.width = data.pop()*2
+			let min = Min(data)
+			let max = Max(data)
+			data = data.map(d => Math.floor((d - min) / (max - min) * 255));
+			data = data.reverse()
+			data.forEach((item, idx)=>{
+				ctx.fillStyle = "rgb(" + item + "," + item + "," + item + ")"
+				ctx.fillRect(idx%c.width *2, Math.floor(idx/c.width)*2, 2, 2)
+			})
 		})
 	</script>
 </body>

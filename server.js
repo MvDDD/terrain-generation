@@ -4,15 +4,15 @@ const { execSync } = require('child_process');
 
 let server = http.createServer((req, res)=>{
 	console.log("req")
-	if (req.url == "/data.js"){
+	if (req.url.split("?=")[0] == "/data.js"){
 		try {
-			execSync('main.exe', { stdio: 'inherit' });
+			execSync('main.exe ' + req.url.split("?=")[1], { stdio: 'inherit' });
 			console.log('Executable completed successfully');
 		} catch (error) {
 			console.error('Error executing the executable:', error);
 		}
 		res.writeHead(200, "text/javascript")
-		res.end("let data = `" + fs.readFileSync("out.txt", "utf-8") + "`", "utf-8")
+		res.end(fs.readFileSync("out.txt", "utf-8"), "utf-8")
 	} else if (req.url == "/2d"){
 		res.writeHead(200, "text/html")
 		res.end(fs.readFileSync("2d.html", "utf-8"), "utf-8")

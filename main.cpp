@@ -2,11 +2,12 @@
 #include <stdio.h>
 #include <fstream>
 #include <chrono>
+#include <string>
 #include "noise.h" //perlin(int32_t x, int32_t y, int32_t z, uint32_t seed, float scale)
 
-int main() {
+int main(int argc, char *argv[]) {
 	std::ofstream file("out.txt");
-    uint32_t seed = 3422365;  // Example seed
+    uint32_t seed = std::__cxx11::stoi(argv[1]);  // Example seed
     uint32_t width = 128;
     uint32_t height = 128;
     file << (uint32_t)width << " " << (uint32_t)height << " ";

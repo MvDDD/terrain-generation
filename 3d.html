@@ -11,112 +11,112 @@
 </head>
 <body>
     <script src="three.js"></script>
-    <script type="text/javascript" src="data.js"></script>
     <script>
-        // Constants for voxel dimensions
-        const VOX_WIDTH = 1;
-        const VOX_HEIGHT = 1;
-        const VOX_DEPTH = 100;
-        const CHUNK_SIZE = 12;
+        (async()=>{
+            let data = await fetch("data.js?=134875290").then(async a=>await a.text())
+            const VOX_WIDTH = 1;
+            const VOX_HEIGHT = 1;
+            const VOX_DEPTH = 100;
+            const CHUNK_SIZE = 12;
 
-        // Camera properties
-        let camera_radius = 100; // Distance from the center
-        let camera_angle = 0;   // Initial angle
-        let camera_angle_speed = 0.01; // Speed of rotation
-        let camera_target = new THREE.Vector3(0, 0, 0); // Center of the scene
-        let mouseX = 0, mouseY = 0;
-
-        // Function to generate a random integer between min and max
-        function randInt(min, max) {
-            return Math.floor(Math.random() * (max - min + 1) + min);
-        }
-
-        // Block types with colors
-
-        // Render a voxel block
-        function renderBlock(x, y, z) {
-            let geometry = new THREE.BoxGeometry(VOX_WIDTH, VOX_HEIGHT, VOX_DEPTH);
-            let material = new THREE.MeshLambertMaterial({ color: 0xF2C200 });
-            let mesh = new THREE.Mesh(geometry, material);
-            mesh.position.set(x * VOX_WIDTH, y * VOX_HEIGHT, z);
-            mesh.receiveShadow = true;
-            mesh.castShadow = true;
-            scene.add(mesh);
-        }
-
-        // Initialize the scene, camera, and renderer
-        let scene = new THREE.Scene();
-        let camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100); //near far
-        let renderer = new THREE.WebGLRenderer({ antialias: true });
-
-        // Set renderer properties
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.setClearColor(0xDDDDFF, 1);
-        document.body.appendChild(renderer.domElement);
-
-        // Parse the data
-        let dataArray = data.split(' ').map(Number);
-        let width = dataArray.shift();
-        let height = dataArray.shift();
-        let voxelData = [];
-
-        for (let y = 0; y < height; y++) {
-            let row = [];
-            for (let x = 0; x < width; x++) {
-                let z = dataArray.shift();
-                row.push(Math.round(z -50));
+            let camera_radius = 100; // Distance from the center
+            let camera_angle = 0;   // Initial angle
+            let camera_angle_speed = 0.01; // Speed of rotation
+            let camera_target = new THREE.Vector3(0, 0, 0); // Center of the scene
+            let mouseX = 0, mouseY = 0;
+            
+            // Function to generate a random integer between min and max
+            function randInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1) + min);
             }
-            voxelData.push(row);
-        }
-
-        // Render voxels based on parsed data
-        voxelData.forEach((row, y) => {
-            row.forEach((value, x) => {
-                renderBlock(x - width/2, y - height/2, value);
+            
+            // Block types with colors
+            
+            // Render a voxel block
+            function renderBlock(x, y, z) {
+                let geometry = new THREE.BoxGeometry(VOX_WIDTH, VOX_HEIGHT, VOX_DEPTH);
+                let material = new THREE.MeshLambertMaterial({ color: 0xF2C200 });
+                let mesh = new THREE.Mesh(geometry, material);
+                mesh.position.set(x * VOX_WIDTH, y * VOX_HEIGHT, z);
+                mesh.receiveShadow = true;
+                mesh.castShadow = true;
+                scene.add(mesh);
+            }
+            
+            // Initialize the scene, camera, and renderer
+            let scene = new THREE.Scene();
+            let camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100); //near far
+            let renderer = new THREE.WebGLRenderer({ antialias: true });
+            
+            // Set renderer properties
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setClearColor(0xDDDDFF, 1);
+            document.body.appendChild(renderer.domElement);
+            
+            // Parse the data
+            let dataArray = data.split(' ').map(Number);
+            let width = dataArray.shift();
+            let height = dataArray.shift();
+            let voxelData = [];
+            
+            for (let y = 0; y < height; y++) {
+                let row = [];
+                for (let x = 0; x < width; x++) {
+                    let z = dataArray.shift();
+                    row.push(Math.round(z -50));
+                }
+                voxelData.push(row);
+            }
+            
+            // Render voxels based on parsed data
+            voxelData.forEach((row, y) => {
+                row.forEach((value, x) => {
+                    renderBlock(x - width/2, y - height/2, value);
+                });
             });
-        });
-
-        // Set camera properties
-        camera.position.set(camera_radius, 0, 10); // Initial position
-        camera.up.set(0, 0, 1);
-        camera.lookAt(camera_target);
-
-        // Add lights
-        let spot_light = new THREE.SpotLight(0xffffff, 1.0);
-        spot_light.position.set(10, 10, 100);
-        spot_light.target = scene;
-        spot_light.shadow.mapSize.width = 2048;
-        spot_light.shadow.mapSize.height = 2048;
-        scene.add(spot_light);
-
-        let am_light = new THREE.AmbientLight(0x555555);
-        scene.add(am_light);
-
-        // Track mouse movement
-        document.addEventListener('mousemove', (event) => {
-            let x = (event.clientX / window.innerWidth) * 2 - 1; // Normalize to [-1, 1]
-            let y = -(event.clientY / window.innerHeight) * 2 + 1; // Normalize to [-1, 1]
-            mouseX = x;
-            mouseY = y;
-        });
-
-        // Render loop
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Update camera angle based on mouse position
-            camera_angle += camera_angle_speed;
-            camera.position.x = Math.cos(camera_angle) * camera_radius;
-            camera.position.y = Math.sin(camera_angle) * camera_radius;
-            camera.position.z = 40
-            camera.lookAt(camera_target); // Always look at the center of the scene
-
-            renderer.render(scene, camera);
-        }
-
-        animate();
+            
+            // Set camera properties
+            camera.position.set(camera_radius, 0, 10); // Initial position
+            camera.up.set(0, 0, 1);
+            camera.lookAt(camera_target);
+            
+            // Add lights
+            let spot_light = new THREE.SpotLight(0xffffff, 1.0);
+            spot_light.position.set(10, 10, 100);
+            spot_light.target = scene;
+            spot_light.shadow.mapSize.width = 2048;
+            spot_light.shadow.mapSize.height = 2048;
+            scene.add(spot_light);
+            
+            let am_light = new THREE.AmbientLight(0x555555);
+            scene.add(am_light);
+            
+            // Track mouse movement
+            document.addEventListener('mousemove', (event) => {
+                let x = (event.clientX / window.innerWidth) * 2 - 1; // Normalize to [-1, 1]
+                let y = -(event.clientY / window.innerHeight) * 2 + 1; // Normalize to [-1, 1]
+                mouseX = x;
+                mouseY = y;
+            });
+            
+            // Render loop
+            function animate() {
+                requestAnimationFrame(animate);
+                
+                // Update camera angle based on mouse position
+                camera_angle += camera_angle_speed;
+                camera.position.x = Math.cos(camera_angle) * camera_radius;
+                camera.position.y = Math.sin(camera_angle) * camera_radius;
+                camera.position.z = 40
+                camera.lookAt(camera_target); // Always look at the center of the scene
+                
+                renderer.render(scene, camera);
+            }
+            
+            animate();
+        })()
     </script>
 </body>
 </html>
