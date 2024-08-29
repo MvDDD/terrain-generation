@@ -1,12 +1,10 @@
 <html>
 <head></head>
 <body>
-	<input>
 	<canvas style="border: 1px solid #ff0000;"></canvas>
 	<script async>
-		let data;
-		document.getElementsByTagName("input")[0].addEventListener("blur", async ()=>{
-			data = await fetch("data.js?=" + document.getElementsByTagName("input")[0].value).then(async res=>{return await res.text()})
+		(async()=>{
+			let data = await fetch("data.js?=1024").then(async res=>{return await res.text()})
 			function Max(arr) {
 				let max = -Infinity;
 				for (let i = 0; i < arr.length; i++) {
@@ -34,10 +32,10 @@
 			data.forEach((item, idx)=>{
 				ctx.fillStyle = "rgb(" + item + "," + item + "," + item + ")"
 				let x = idx%c.width *2
-				let y = Math.floor(idx/c.width)*2
+				let y = Math.floor(idx/c.width) *2
 				ctx.fillRect(x, y, 2, 2)
 			})
-		})
+		})()
 	</script>
 </body>
 </html>

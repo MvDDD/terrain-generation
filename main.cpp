@@ -7,9 +7,9 @@
 
 int main(int argc, char *argv[]) {
 	std::ofstream file("out.txt");
-    uint32_t seed = std::__cxx11::stoi(argv[1]);  // Example seed
-    uint32_t width = 1024;
-    uint32_t height = 1024;
+    uint32_t seed = 4938765;  // Example seed
+    uint32_t width = std::__cxx11::stoi(argv[1]);
+    uint32_t height = std::__cxx11::stoi(argv[1]);
     file << (uint32_t)width << " " << (uint32_t)height << " ";
     for (int32_t x = 0; x < width; x++) {
     	for (int32_t y = 0; y < height; y++) {
@@ -21,7 +21,7 @@ int main(int argc, char *argv[]) {
             //value /= 3;
     		float biome = flat / 256.0f;
     		value *= biome;
-    		value /= 3;
+    		value /= 0 + 5;
 
     		file << (uint32_t)(value) << " ";
     	}
