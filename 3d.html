@@ -20,7 +20,7 @@
         const CHUNK_SIZE = 12;
 
         // Camera properties
-        let camera_radius = 80; // Distance from the center
+        let camera_radius = 100; // Distance from the center
         let camera_angle = 0;   // Initial angle
         let camera_angle_speed = 0.01; // Speed of rotation
         let camera_target = new THREE.Vector3(0, 0, 0); // Center of the scene
@@ -46,7 +46,7 @@
 
         // Initialize the scene, camera, and renderer
         let scene = new THREE.Scene();
-        let camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 70); //near far
+        let camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100); //near far
         let renderer = new THREE.WebGLRenderer({ antialias: true });
 
         // Set renderer properties
@@ -66,7 +66,7 @@
             let row = [];
             for (let x = 0; x < width; x++) {
                 let z = dataArray.shift();
-                row.push(Math.round(z/128 *20));
+                row.push(Math.round(z -50));
             }
             voxelData.push(row);
         }
