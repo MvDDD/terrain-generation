@@ -14,7 +14,7 @@ int main(int argc, char *argv[]) {
     for (int32_t x = 0; x < width; x++) {
     	for (int32_t y = 0; y < height; y++) {
     		uint32_t value = perlin(x, y, 0, seed, 0.05f);
-    		uint32_t flat = perlin(x,y,0, seed, 0.1f);
+    		uint32_t flat = perlin(x,y,0, seed, 0.005f);
             //value += perlin(20*x, 20*y, 1, seed);
             //value += perlin(3*x, 3*y, 1, seed);
             //value += perlin(4*x, 4*y, 1, seed);

@@ -45,8 +45,13 @@
 
             // Initialize the scene, camera, and renderer
             let scene = new THREE.Scene();
-            let camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 100); //near far
-            let renderer = new THREE.WebGLRenderer({ antialias: true });
+            let camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 0.1, 1000); //near far
+            let renderer = new THREE.WebGLRenderer({
+                antialias: true,
+                preserveDrawingBuffer: false,
+                powerPreference: 'high-performance',
+
+            });
 
             // Set renderer properties
             renderer.shadowMap.enabled = true;

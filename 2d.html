@@ -1,11 +1,13 @@
+<!DOCTYPE html>
 <html>
 <head></head>
 <body>
-	<canvas style="border: 1px solid #ff0000;"></canvas>
-	<script async>
-		(async()=>{
-			let data = await fetch("data.js?=1024").then(async res=>{return await res.text()})
-			function Max(arr) {
+    <canvas style="border: 1px solid #ff0000;"></canvas>
+    <script async>
+    	let data;
+        (async () => {
+            try {
+            				function Max(arr) {
 				let max = -Infinity;
 				for (let i = 0; i < arr.length; i++) {
 					if (arr[i] > max) max = arr[i];
@@ -20,22 +22,49 @@
 				}
 				return min;
 			}
-			let c = document.getElementsByTagName("canvas")[0]
-			ctx = c.getContext("2d")
-			data = data.split(" ").reverse().map(a=>parseInt(a))
-			c.height = data.pop()*2
-			c.width = data.pop()*2
-			let min = Min(data)
-			let max = Max(data)
-			data = data.map(d => Math.floor((d - min) / (max - min) * 255));
-			data = data.reverse()
-			data.forEach((item, idx)=>{
-				ctx.fillStyle = "rgb(" + item + "," + item + "," + item + ")"
-				let x = idx%c.width *2
-				let y = Math.floor(idx/c.width) *2
-				ctx.fillRect(x, y, 2, 2)
-			})
-		})()
-	</script>
+                // Fetch data from the server (assuming data.js returns a string of numbers)
+                let response = await fetch("data.js?=1024");
+                data = await response.text();
+
+                // Parse data into an array of integers
+                data = data.split(" ").map(a => parseInt(a, 10)).filter(n => !isNaN(n));
+                data.shift()
+                data.shift()
+
+                // Reference to the canvas and its context
+                let canvas = document.querySelector("canvas");
+                let ctx = canvas.getContext("2d");
+
+                // Set the canvas size; scales each pixel to a 2x2 square
+                canvas.width = 2048;
+                canvas.height = 2048;
+
+                // Find min and max values in the data for normalization
+                let min = Min(data);
+                let max = Max(data);
+
+                // Normalize the data values to a range of 0-255 for grayscale
+                data = data.map(value => Math.floor((value - min) / (max - min) * 255));
+
+                // Render each value on the canvas, scaling it up 2x
+                for (let x = 0; x < 1024; x++) {
+                    for (let y = 0; y < 1024; y++) {
+                        let index = x * 1024 + y;
+                        let grayscaleValue = data[index];
+
+                        // Set the color based on the normalized value
+                        ctx.fillStyle = `rgb(${grayscaleValue}, ${grayscaleValue}, ${grayscaleValue})`;
+
+                        // Draw a 2x2 pixel rectangle for each data point
+                        ctx.fillRect(x * 2, y * 2, 2, 2);
+                    }
+                }
+
+                console.log('Rendering complete');
+            } catch (error) {
+                console.error('Error loading or processing data:', error);
+            }
+        })();
+    </script>
 </body>
 </html>
